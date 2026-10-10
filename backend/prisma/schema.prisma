@@ -1,0 +1,42 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  passwordHash String
+  balance      Float         @default(100000.00) // Default starting cash: $100,000
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  holdings     Holding[]
+  transactions Transaction[]
+}
+
+model Holding {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  symbol         String
+  shares         Float    // Support fractional shares
+  averageBuyPrice Float
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, symbol])
+}
+
+model Transaction {
+  id        String          @id @default(uuid())
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  symbol    String
+  type      String          // "BUY" or "SELL"
+  shares    Float
+  price     Float
+  timestamp DateTime        @default(now())
+}
