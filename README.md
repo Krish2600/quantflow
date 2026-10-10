@@ -1,29 +1,70 @@
 # QuantFlow ⚡ | Real-Time Stock Simulator & Portfolio Manager
 
-A full-stack, real-time paper trading and portfolio simulator designed with **clean architecture**, **atomic transactional safety**, and **high-frequency UI updates**.
+<p align="center">
+  <img src="frontend/src/assets/hero.png" alt="QuantFlow Dashboard Banner" width="100%" style="border-radius: 10px; max-width: 900px;" />
+</p>
 
-This project is built from scratch using **TypeScript** across the entire stack, proving robust software engineering (SDE) capabilities in real-time network services, database design, and frontend performance.
+<p align="center">
+  <a href="https://quantflow-8fu9.onrender.com/" target="_blank">
+    <img src="https://img.shields.io/badge/🌐_Live_Demo-quantflow--8fu9.onrender.com-00C853?style=for-the-badge&logo=render&logoColor=white" alt="Live Demo" />
+  </a>
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" />
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/WebSockets-010101?style=for-the-badge&logo=socketdotio&logoColor=white" alt="WebSockets" />
+  <img src="https://img.shields.io/badge/Prisma_ORM-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+</p>
+
+<p align="center">
+  <b>A full-stack, real-time paper trading platform and portfolio manager engineered for high-frequency market updates, atomic transaction safety, and algorithmic price simulation.</b>
+</p>
 
 ---
 
-## 🚀 Key SDE Highlights (For Your Resume)
+> [!TIP]
+> 🚀 **Explore Live**: Test drive the live deployed app right now at **[https://quantflow-8fu9.onrender.com/](https://quantflow-8fu9.onrender.com/)**
 
-*   **Real-time Streaming Engine**: Implemented a low-latency price broadcast module using **WebSockets (`ws`)** that pushes high-frequency market updates directly to frontend consumers, bypassing expensive HTTP polling overhead.
-*   **Algorithmic Price Simulation**: Modeled realistic stock market fluctuations using **Geometric Brownian Motion (GBM)** (via Box-Muller normal distribution transform) running inside a background tick worker.
-*   **Atomic Concurrency Control**: Programmed the trading execution engine within **atomic database transactions (`Prisma.$transaction`)** to guarantee transaction isolation, preventing race conditions (such as double-spending cash balances or selling phantom shares).
-*   **Real-Time Portfolio Valuation**: Designed a reactive frontend state machine that automatically recalculates total asset weights, profit/loss margins, and net portfolio value in real-time as prices tick in the browser.
-*   **Docker Containerization**: Set up multi-stage production Docker configurations (`Dockerfile`, `docker-compose.yml`) for instant local deployments and microservice linking.
+---
+
+## ✨ Features at a Glance
+
+* 📊 **High-Frequency WebSocket Price Feed**: Low-latency sub-second market updates pushed directly to the browser via custom WebSockets server (`/ws`).
+* 🧮 **Geometric Brownian Motion (GBM) Engine**: Real-time algorithmic stock fluctuation simulator using Box-Muller normal distribution transformations anchored to live Yahoo Finance quotes.
+* 🛡️ **Atomic Transaction Control**: Order execution powered by `Prisma.$transaction` isolation, preventing double-spending and share over-selling under concurrent requests.
+* 💼 **Multi-Asset Support**: Trade across US Equities, Indian NSE Stocks, Gold & Commodity ETFs, Index Funds, and Mutual Funds with real-time USD/INR currency conversion.
+* 📉 **Interactive Financial Charts**: Dynamic candlestick & gradient area charts with live interval candle formation powered by Recharts.
+* 🎨 **Glassmorphism UI**: High-contrast, dark-mode financial dashboard built with custom Vanilla CSS design tokens.
+* 🐳 **Unified Single-Container Docker Build**: Multi-stage Docker deployment serving both SPA frontend assets and Node.js backend on a unified port.
+
+---
+
+## 🧮 Mathematical Engine (GBM & Box-Muller)
+
+QuantFlow simulates realistic stock market asset trajectories using **Geometric Brownian Motion (GBM)**, defined by the continuous-time stochastic differential equation (SDE):
+
+$$\mathrm{d}S_t = \mu S_t \mathrm{d}t + \sigma S_t \mathrm{d}W_t$$
+
+In discrete time, next step prices are calculated in [`backend/src/services/market.ts`](file:///e:/RProjects/quantflow/backend/src/services/market.ts) using exact logarithmic returns:
+
+$$S_{t+\Delta t} = S_t \cdot \exp\left(\left(\mu - \frac{\sigma^2}{2}\right)\Delta t + \sigma \sqrt{\Delta t} \, Z\right)$$
+
+Where $Z \sim \mathcal{N}(0, 1)$ standard normal random variables are generated using the **Box-Muller Transform**:
+
+$$Z = \sqrt{-2 \ln(U_1)} \cdot \cos(2\pi U_2) \quad \text{for } U_1, U_2 \sim \text{Uniform}(0, 1)$$
 
 ---
 
 ## 🛠️ Tech Stack
 
-*   **Frontend**: React (Vite) + TypeScript + Vanilla CSS (Custom Glassmorphism design system)
-*   **Backend**: Node.js + Express + TypeScript + WebSockets (`ws`)
-*   **Database**: Prisma ORM + SQLite (highly flexible, swap-ready for PostgreSQL)
-*   **Visualizations**: Recharts (gradient area chart, tooltips, responsive grids)
-*   **Containerization**: Docker & Docker Compose
-*   **Testing**: Vitest (Unit Testing)
+| Layer | Technologies Used |
+| :--- | :--- |
+| **Frontend** | React 19, TypeScript, Vite, Recharts, Lucide Icons, Custom CSS (Glassmorphism) |
+| **Backend** | Node.js, Express, TypeScript, WebSockets (`ws`), EventEmitter |
+| **Database & ORM** | Prisma ORM, SQLite (Production Ready) |
+| **Simulation** | Geometric Brownian Motion (GBM), Box-Muller Normal Distribution, Yahoo Finance API Sync |
+| **DevOps & Hosting** | Docker, Docker Compose, Multi-stage Builds, Render Web Services |
+| **Testing** | Vitest (Order Execution Unit Tests) |
 
 ---
 
@@ -31,95 +72,112 @@ This project is built from scratch using **TypeScript** across the entire stack,
 
 ```mermaid
 graph TD
-    Client[React Frontend / Browser] <-->|HTTP Auth & Portfolio APIs| Server[Express REST Server]
+    Client[React 19 Frontend / SPA] <-->|HTTP REST APIs /api/auth & /api/portfolio| Server[Express Node.js Server]
     Client <-->|WebSocket Stream /ws| WSS[WebSocket Server]
-    
-    subgraph Backend Engine [Node.js & TypeScript Server]
+
+    subgraph Backend Engine [Node.js & TypeScript Container]
         Server
         WSS
-        MarketSim[GBM Price Simulator Engine] -->|ticks every 1s| WSS
-        TradingEngine[Trading & Order Processor] -->|db operations| Prisma[Prisma ORM]
+        YahooSync[Yahoo Finance Sync Service] -->|Baseline sync 5m| MarketSim
+        MarketSim[GBM Price Engine] -->|Ticks every 1s| WSS
+        TradingEngine[Trading Transaction Processor] -->|Atomic Transactions| Prisma[Prisma ORM]
     end
-    
+
     subgraph Data Store
-        Prisma -->|Read/Write Transactions| DB[(SQLite Database)]
+        Prisma -->|ACID Read/Write| DB[(SQLite Database)]
     end
-    
-    Server -->|Invoke Trades| TradingEngine
+
+    Server -->|Execute Trade Orders| TradingEngine
 ```
 
 ---
 
-## 📦 Project Directory Structure
+## 📂 Project Directory Structure
 
 ```text
+quantflow/
 ├── backend/
-│   ├── prisma/             # Schema definition & Migrations
+│   ├── prisma/             # Database schema & migrations
 │   ├── src/
-│   │   ├── middleware/     # JWT Auth verification
-│   │   ├── routes/         # REST API endpoints (Auth, Portfolio)
-│   │   ├── services/       # GBM price engine, database link, trading transaction engine
-│   │   └── tests/          # Vitest unit test suites
+│   │   ├── middleware/     # JWT Authentication middleware
+│   │   ├── routes/         # REST API endpoints (Auth, Portfolio, Stocks)
+│   │   ├── services/       # GBM price simulator, Trading transactions, Database client
+│   │   └── tests/          # Vitest transaction test suites
 │   ├── Dockerfile
 │   └── tsconfig.json
 ├── frontend/
 │   ├── src/
-│   │   ├── components/     # StockChart, TradingPanel, PortfolioOverview, AuthScreen, Dashboard
-│   │   ├── context/        # Auth Session State Context
-│   │   └── hooks/          # useStockWS WebSocket tick hooks
-│   ├── index.html          # Outfit Typography config
-│   ├── nginx.conf          # SPA Nginx routing configuration
+│   │   ├── components/     # Dashboard, StockChart, TradingPanel, PortfolioOverview, AuthScreen
+│   │   ├── context/        # Dynamic Auth state provider
+│   │   └── hooks/          # Real-time useStockWS WebSocket tick hooks
+│   ├── index.html
 │   └── Dockerfile
-└── docker-compose.yml      # Orchestrates local launch
+├── Dockerfile              # Production multi-stage full-stack docker build
+├── docker-compose.yml      # Local microservice orchestration
+└── render.yaml             # Render 1-click cloud blueprint
 ```
 
 ---
 
-## 🚦 Getting Started
+## 🚦 Local Quickstart
 
 ### Prerequisites
-*   Node.js (v18+)
-*   Docker & Docker Compose (Optional for container launch)
+* **Node.js**: v18 or higher
+* **Docker & Docker Compose**: (Optional, for container setup)
 
-### Local Development Setup
+### 1. Run Locally with Node.js
 
-1.  **Clone the workspace** and navigate to the project directory.
-2.  **Initialize the Backend**:
-    ```bash
-    cd backend
-    npm install
-    npx prisma migrate dev --name init
-    npm run dev
-    ```
-    *The backend server will launch on `http://localhost:5000` with the WebSocket endpoint mounted on `/ws`.*
+#### **Backend Setup**
+```bash
+cd backend
+npm install
+npx prisma db push
+npm run dev
+```
+*Backend server launches on `http://localhost:5000` with WebSocket mounted on `ws://localhost:5000/ws`.*
 
-3.  **Initialize the Frontend**:
-    ```bash
-    cd ../frontend
-    npm install --legacy-peer-deps
-    npm run dev
-    ```
-    *Open `http://localhost:5173` (or the terminal url) in your browser.*
+#### **Frontend Setup**
+```bash
+cd ../frontend
+npm install --legacy-peer-deps
+npm run dev
+```
+*Frontend opens at `http://localhost:5173`.*
 
-### Running with Docker Compose
-To build and launch the entire stack in isolated container networks:
+---
+
+### 2. Run with Docker Compose
+To run the full stack isolated inside Docker containers:
 ```bash
 docker-compose up --build
 ```
-*   Visit the live frontend at `http://localhost:3000`
-*   The backend handles requests at `http://localhost:5000`
+* Visit `http://localhost:3000` for the frontend and `http://localhost:5000` for backend REST APIs.
 
 ---
 
 ## 🧪 Unit Testing
 
-To verify the transaction safety of the order execution logic, run the backend unit tests:
+To verify atomic transactional safety and trade validation:
 ```bash
 cd backend
 npm run test
 ```
-The test suite verifies:
-1.  Successful buy execution when balance is sufficient.
-2.  Proper error trapping when purchase costs exceed available cash.
-3.  Successful sell execution when shares are owned.
-4.  Failed transactions when selling more shares than held.
+
+Test cases covered:
+1. ✅ **Valid Purchase**: Correctly updates cash balance and holdings.
+2. ❌ **Insufficient Cash**: Traps double-spend errors and reverts transactions.
+3. ✅ **Valid Sell**: Calculates capital gains and updates fractional holdings.
+4. ❌ **Short Sell Protection**: Prevents selling more shares than held.
+
+---
+
+## 🌐 Live Deployment Link
+
+* **Live App**: [https://quantflow-8fu9.onrender.com/](https://quantflow-8fu9.onrender.com/)
+* **Platform**: Render Cloud (Docker Container Web Service)
+
+---
+
+<p align="center">
+  Designed & Built with ❤️ for High-Performance Quantitative Engineering.
+</p>
