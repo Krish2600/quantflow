@@ -1,7 +1,7 @@
 # QuantFlow ⚡ | Real-Time Stock Simulator & Portfolio Manager
 
 <p align="center">
-  <img src="frontend/src/assets/hero.png" alt="QuantFlow Dashboard Banner" width="100%" style="border-radius: 10px; max-width: 900px;" />
+  <img src="frontend/src/assets/hero.png" alt="QuantFlow Dashboard Banner" width="60%" style="border-radius: 10px; max-width: 600px;" />
 </p>
 
 <p align="center">
